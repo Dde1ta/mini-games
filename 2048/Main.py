@@ -24,6 +24,7 @@ class Main:
         self.blocks = [[Block(1) for i in range(4)] for i in range(4)]
         self.score = 0
         self.playing = True
+        self.last = None
 
     def spawn(self):
         #self.check_over()
@@ -49,94 +50,110 @@ class Main:
         print(self.playing)
 
     def down(self):
-        for row in range(len(self.blocks)-2,-1,-1):
-            for column in range(len(self.blocks[0])):
-                current_row = row
-                current_column = column
-                while self.blocks[current_row+1][current_column].get_number() == 1:
-                    self.blocks[current_row + 1][current_column].set_number(self.blocks[current_row][current_column].get_number())
-                    self.blocks[current_row][current_column].set_number(1)
-                    current_row += 1
-                    if current_row+1 >= len(self.blocks):
-                        break
-                    # self.__display__()
-                    # input(f"{row} {column} {current_row} {current_column}")
-                if current_row+1 >= len(self.blocks):
-                    pass
-                else:
-                    if self.blocks[current_row+1][current_column].get_number() == self.blocks[current_row][current_column].get_number():
-                        self.blocks[current_row + 1][current_column].increase()
+        if self.last == 'd':
+            pass
+        else:
+            self.last = 'd'
+            for row in range(len(self.blocks)-2,-1,-1):
+                for column in range(len(self.blocks[0])):
+                    current_row = row
+                    current_column = column
+                    while self.blocks[current_row+1][current_column].get_number() == 1:
+                        self.blocks[current_row + 1][current_column].set_number(self.blocks[current_row][current_column].get_number())
                         self.blocks[current_row][current_column].set_number(1)
-        self.spawn()
+                        current_row += 1
+                        if current_row+1 >= len(self.blocks):
+                            break
+                        # self.__display__()
+                        # input(f"{row} {column} {current_row} {current_column}")
+                    if current_row+1 >= len(self.blocks):
+                        pass
+                    else:
+                        if self.blocks[current_row+1][current_column].get_number() == self.blocks[current_row][current_column].get_number():
+                            self.blocks[current_row + 1][current_column].increase()
+                            self.blocks[current_row][current_column].set_number(1)
+            self.spawn()
 
     def right(self):
-        for row in range(len(self.blocks)):
-            for column in range(len(self.blocks[0])-2,-1,-1):
-                current_row = row
-                current_column = column
-                while self.blocks[current_row ][current_column+1].get_number() == 1:
-                    self.blocks[current_row][current_column+1].set_number(
-                    self.blocks[current_row][current_column].get_number())
-                    self.blocks[current_row][current_column].set_number(1)
-                    current_column += 1
-                    if current_column + 1 >= len(self.blocks[0]):
-                        break
-                    # self.__display__()
-                    # input(f"{row} {column} {current_row} {current_column}")
-                if current_column + 1 >= len(self.blocks):
-
-                    pass
-                else:
-                    if self.blocks[current_row][current_column+1].get_number() == self.blocks[current_row][current_column].get_number():
-                        self.blocks[current_row][current_column+1].increase()
+        if self.last == 'r':
+            pass
+        else:
+            self.last = 'r'
+            for row in range(len(self.blocks)):
+                for column in range(len(self.blocks[0])-2,-1,-1):
+                    current_row = row
+                    current_column = column
+                    while self.blocks[current_row ][current_column+1].get_number() == 1:
+                        self.blocks[current_row][current_column+1].set_number(
+                        self.blocks[current_row][current_column].get_number())
                         self.blocks[current_row][current_column].set_number(1)
-        self.spawn()
+                        current_column += 1
+                        if current_column + 1 >= len(self.blocks[0]):
+                            break
+                        # self.__display__()
+                        # input(f"{row} {column} {current_row} {current_column}")
+                    if current_column + 1 >= len(self.blocks):
+
+                        pass
+                    else:
+                        if self.blocks[current_row][current_column+1].get_number() == self.blocks[current_row][current_column].get_number():
+                            self.blocks[current_row][current_column+1].increase()
+                            self.blocks[current_row][current_column].set_number(1)
+            self.spawn()
 
     def left(self):
-        for row in range(len(self.blocks)):
-            for column in range(1,len(self.blocks[0])):
-                current_row = row
-                current_column = column
-                while self.blocks[current_row][current_column - 1].get_number() == 1:
-                    self.blocks[current_row][current_column - 1].set_number(
-                    self.blocks[current_row][current_column].get_number())
-                    self.blocks[current_row][current_column].set_number(1)
-                    current_column -= 1
-                    if current_column - 1 < 0:
-                        break
-                    # self.__display__()
-                    # input(f"{row} {column} {current_row} {current_column}")
-                if current_column - 1 < 0:
-                    pass
-                else:
-                    if self.blocks[current_row][current_column- 1].get_number() == self.blocks[current_row][
-                        current_column].get_number():
-                        self.blocks[current_row][current_column - 1].increase()
+        if self.last == 'l':
+            pass
+        else:
+            self.last = 'l'
+            for row in range(len(self.blocks)):
+                for column in range(1,len(self.blocks[0])):
+                    current_row = row
+                    current_column = column
+                    while self.blocks[current_row][current_column - 1].get_number() == 1:
+                        self.blocks[current_row][current_column - 1].set_number(
+                        self.blocks[current_row][current_column].get_number())
                         self.blocks[current_row][current_column].set_number(1)
-        self.spawn()
+                        current_column -= 1
+                        if current_column - 1 < 0:
+                            break
+                        # self.__display__()
+                        # input(f"{row} {column} {current_row} {current_column}")
+                    if current_column - 1 < 0:
+                        pass
+                    else:
+                        if self.blocks[current_row][current_column- 1].get_number() == self.blocks[current_row][
+                            current_column].get_number():
+                            self.blocks[current_row][current_column - 1].increase()
+                            self.blocks[current_row][current_column].set_number(1)
+            self.spawn()
 
     def up(self):
-        for row in range(1,len(self.blocks)):
-            for column in range(len(self.blocks[0])):
-                current_row = row
-                current_column = column
-                while self.blocks[current_row - 1][current_column].get_number() == 1:
-                    self.blocks[current_row - 1][current_column].set_number(
-                    self.blocks[current_row][current_column].get_number())
-                    self.blocks[current_row][current_column].set_number(1)
-                    current_row -= 1
-                    if current_row - 1 < 0:
-                        break
-                    # self.__display__()
-                    # input(f"{row} {column} {current_row} {current_column}")
-                if current_row - 1 < 0:
-                    pass
-                else:
-                    if self.blocks[current_row - 1][current_column].get_number() == self.blocks[current_row][
-                        current_column].get_number():
-                        self.blocks[current_row - 1][current_column].increase()
+        if self.last == 'u':
+            pass
+        else:
+            self.last = 'u'
+            for row in range(1,len(self.blocks)):
+                for column in range(len(self.blocks[0])):
+                    current_row = row
+                    current_column = column
+                    while self.blocks[current_row - 1][current_column].get_number() == 1:
+                        self.blocks[current_row - 1][current_column].set_number(
+                        self.blocks[current_row][current_column].get_number())
                         self.blocks[current_row][current_column].set_number(1)
-        self.spawn()
+                        current_row -= 1
+                        if current_row - 1 < 0:
+                            break
+                        # self.__display__()
+                        # input(f"{row} {column} {current_row} {current_column}")
+                    if current_row - 1 < 0:
+                        pass
+                    else:
+                        if self.blocks[current_row - 1][current_column].get_number() == self.blocks[current_row][
+                            current_column].get_number():
+                            self.blocks[current_row - 1][current_column].increase()
+                            self.blocks[current_row][current_column].set_number(1)
+            self.spawn()
 
     def __display__(self):
         for i in self.blocks:
@@ -232,7 +249,7 @@ if __name__ == "__main__":
     root.config(bg = "black")
 
     label_frame = tk.Frame(root, width=700, height=600, bg="white")
-    label_frame.pack_propagate(0)
+    label_frame.pack_propagate(False)
     label_frame.place(x=0 , y= 0)
 
     game = Draw(frame = label_frame)
