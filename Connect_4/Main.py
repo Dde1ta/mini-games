@@ -16,6 +16,7 @@ class Main:
 
         self.per = 0
         self.pressed = False
+        self.win = False
 
         self.draw_grid()
         self.canvas.pack()
@@ -35,22 +36,96 @@ class Main:
 
     def on_press(self,zonex):
         last = len(self.oval_dict[str(zonex)]) - 1
-        print(last)
         while self.canvas.itemcget(self.oval_dict[str(zonex)][last],"fill") in [self.set_yellow,self.set_red] and last >= 0:
             last -= 1
         if self.active_color == self.active_red:
             self.canvas.itemconfig(self.oval_dict[str(zonex)][last], fill=self.set_red)
             self.active_color = self.active_yellow
+            self.win = self.is_connect_4(zonex,last,self.set_red)
         else:
             self.canvas.itemconfig(self.oval_dict[str(zonex)][last], fill=self.set_yellow)
             self.active_color = self.active_red
+            self.win = self.is_connect_4(zonex, last, self.set_yellow)
+
+        print(self.win)
+
+    def is_connect_4(self,zonex,current,color):
+
+        # left i.e zonex -- 100
+
+        left = zonex
+        n = 1
+        while self.canvas.itemcget(self.oval_dict[str(left)][current],"fill") == color:
+            n += 1
+            left -= 100
+            if(left < 0):
+                break
+            elif n == 4:
+                return True
+
+        # dialgonal left i.e zonex -= 100 current -= 1
+
+        left = zonex
+        row = current
+        n = 1
+        while self.canvas.itemcget(self.oval_dict[str(left)][row], "fill") == color:
+            n += 1
+            left -= 100
+            row += 1
+            if (left < 0) or (row >= len(self.oval_dict[str(left)])):
+                break
+            elif n == 4:
+                return True
+
+        # down i.e current -= 1
+
+        row = current
+        n = 1
+        while self.canvas.itemcget(self.oval_dict[str(zonex)][row], "fill") == color:
+            n += 1
+            row += 1
+            if (row >= len(self.oval_dict[str(left)])):
+                break
+            elif n == 4:
+                return True
+
+        # diagonal right i.e zonex += 100 and current -= 1
+
+        right = zonex
+        row = current
+        n = 1
+        while self.canvas.itemcget(self.oval_dict[str(right)][row], "fill") == color:
+            n += 1
+            right += 100
+            row += 1
+            if (left < 0) or (row >= len(self.oval_dict[str(left)])):
+                break
+            elif n == 4:
+                return True
+
+        # right i.e zonex += 100
+
+        right = zonex
+        n = 1
+        while self.canvas.itemcget(self.oval_dict[str(right)][current], "fill") == color:
+            n += 1
+            right -= 100
+            if (right < 0):
+                break
+            elif n == 4:
+                return True
+
+        return False
+
 
     def animate(self):
+        if self.win:
+            return None
         x,y = self.get_mouse()
         state_left = win32api.GetKeyState(0x01)
 
-        zonex = (x//100)*100
-        zoney = (y//100)*100
+        zonex = ((x-150)//100)*100
+        zoney = ((y)//100)*100
         last = len(self.oval_dict[str(0)]) - 1
 
         if zonex <= 1600:
@@ -69,7 +144,6 @@ class Main:
             while self.canvas.itemcget(self.oval_dict[str(zonex)][last], "fill") in [self.set_yellow, self.set_red] and last >= 0:
                 last -= 1
             self.canvas.itemconfig(self.oval_dict[str(zonex)][last], fill=self.active_color)
-            print(last)
 
             #print(state_left)
         else:
@@ -86,12 +160,13 @@ class Main:
 
         self.cycle()
 
+
     def cycle(self):
         self.canvas.after(60,self.animate)
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.geometry("1800x1000+0+0")
+    root.geometry("1800x1000+150+0")
 
     frame = tk.Frame(root,height = 1000, width = 1800)
     frame.pack()
