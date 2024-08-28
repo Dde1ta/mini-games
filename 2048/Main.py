@@ -272,7 +272,7 @@ def game_consol():
                 running = False
 
     pass
-
+#
 if __name__ == "__main__":
     root = tk.Tk()
     root.geometry("560x755")
@@ -288,3 +288,5 @@ if __name__ == "__main__":
     #
 
     # game_consol()
+
+# game_consol()
