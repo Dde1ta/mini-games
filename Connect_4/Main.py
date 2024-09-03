@@ -1,6 +1,8 @@
 import tkinter as tk
 import pyautogui as pag
 import win32api
+
+
 class Main:
     def __init__(self,frame = None,height = 0,width = 0):
         self.canvas  = tk.Canvas(frame,height= height, width= width,bg = "Black")
@@ -54,7 +56,7 @@ class Main:
         # left i.e zonex -- 100
 
         left = zonex
-        n = 1
+        n = 0
         while self.canvas.itemcget(self.oval_dict[str(left)][current],"fill") == color:
             n += 1
             left -= 100
@@ -67,7 +69,7 @@ class Main:
 
         left = zonex
         row = current
-        n = 1
+        n = 0
         while self.canvas.itemcget(self.oval_dict[str(left)][row], "fill") == color:
             n += 1
             left -= 100
@@ -80,11 +82,11 @@ class Main:
         # down i.e current -= 1
 
         row = current
-        n = 1
+        n = 0
         while self.canvas.itemcget(self.oval_dict[str(zonex)][row], "fill") == color:
             n += 1
             row += 1
-            if (row >= len(self.oval_dict[str(left)])):
+            if (row >= len(self.oval_dict[str(zonex)])):
                 break
             elif n == 4:
                 return True
@@ -93,7 +95,7 @@ class Main:
 
         right = zonex
         row = current
-        n = 1
+        n = 0
         while self.canvas.itemcget(self.oval_dict[str(right)][row], "fill") == color:
             n += 1
             right += 100
@@ -106,17 +108,16 @@ class Main:
         # right i.e zonex += 100
 
         right = zonex
-        n = 1
+        n = 0
         while self.canvas.itemcget(self.oval_dict[str(right)][current], "fill") == color:
             n += 1
-            right -= 100
-            if (right < 0):
+            right += 100
+            if (right >= 1700):
                 break
             elif n == 4:
                 return True
 
         return False
-
 
     def animate(self):
         if self.win:
@@ -160,9 +161,10 @@ class Main:
 
         self.cycle()
 
-
     def cycle(self):
         self.canvas.after(60,self.animate)
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
