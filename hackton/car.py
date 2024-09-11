@@ -30,6 +30,8 @@ red_car = pygame.image.load("assets/red_car.png")
 
 background = pygame.image.load("assets/background2.png")
 
+bajaj = pygame.image.load("assets/bajaj_coin.png")
+
 player_x = 418
 
 player_y = 600
@@ -159,7 +161,7 @@ def draw_cars(car_rows, ticks):
         for car_new in row:
 
             car_new.bottom += ticks
-            pygame.draw.rect(screen, (255, 0, 255), car_new)
+            pygame.draw.rect(screen, (26, 48, 59), car_new)
             screen.blit(red_car, (car_new.left, car_new.top))
 
             if (pygame.Rect.colliderect(car, car_new)):
@@ -213,7 +215,7 @@ def draw_road(road, ticks):
 
 
 def draw_car(pos):
-    pygame.draw.rect(screen, (255, 0, 0), car)
+    pygame.draw.rect(screen, (26, 48, 59), car)
 
 
 road_centers = spawn_road(700 // road_height + 2)
