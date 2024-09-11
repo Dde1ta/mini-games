@@ -21,8 +21,8 @@ class Sort:
         print(self.width)
         self.canvas = canvas
         self.draw_arr()
-        self.quick_sort(start = 0,end = length-1)
-        #self.insertion_sort()
+        #self.quick_sort(start = 0,end = length-1)
+        self.insertion_sort()
 
     def wait(self):
         pass
@@ -102,7 +102,7 @@ class Sort:
 
             self.empty_canvas()
             self.draw_arr(povit)
-            self.canvas.after(0, self.wait)
+            # self.canvas.after(0, self.wait)
 
         temp = self.arr[povit]
         self.arr[povit] = self.arr[bigger]
@@ -132,6 +132,6 @@ if __name__ == "__main__":
     canvas = tk.Canvas(root, bg="black", height=800, width= 1500)
     canvas.pack()
 
-    sort = Sort(750, canvas, speed=1)
+    sort = Sort(50, canvas, speed=1)
 
     root.mainloop()
