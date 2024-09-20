@@ -87,7 +87,7 @@ class Main:
                 if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
                     return False
                 return self.check_4(zonex, current - 1, color, n + 1,'d')
-
+              
             case 'r':
                 if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
                     return False
@@ -126,7 +126,7 @@ class Main:
                     is_win = is_win or self.check_4(zonex,current,color,n,d)
 
                 return is_win
-
+              
     def animate(self):
         if self.win:
             return None
