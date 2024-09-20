@@ -89,7 +89,6 @@ def Game_over():
     screen.blit(game_over, (150, 0))
     screen.blit(score, (250, 200))
 
-
 def draw_player(x, y):
     screen.blit(player_car, (x, y))
 
@@ -127,6 +126,8 @@ def spawn_new_car_row():
     if pattern == [0, 0, 0]:
         pass
     else:
+
+        # Lane 1
         if pattern[0] == 1:
             new_car_center.append([
                 road_centers[-1][0] - 150, -150
@@ -136,7 +137,9 @@ def spawn_new_car_row():
                 bajaj_center.append([
                     road_centers[-1][0] - 150, -150
                 ])
+                is_bajaj = False
 
+        #Lane 2
         if pattern[1] == 1:
             new_car_center.append([
                 road_centers[-1][0], -150
@@ -146,7 +149,10 @@ def spawn_new_car_row():
                 bajaj_center.append([
                     road_centers[-1][0], -150
                 ])
+                is_bajaj = False
 
+
+        #Lane 3
         if pattern[2] == 1:
             new_car_center.append([
                 road_centers[-1][0] + 150, -150
@@ -156,6 +162,8 @@ def spawn_new_car_row():
                 bajaj_center.append([
                     road_centers[-1][0] + 150, -150
                 ])
+                is_bajaj = False
+
 
         car_rows.append(new_car_center)
 
@@ -189,7 +197,6 @@ def create_bajaj():
     else:
         return False
 
-
 def draw_bajaj(bajaj_rects,tick):
     global is_protected
     if bajaj_rects == False:
@@ -202,7 +209,6 @@ def draw_bajaj(bajaj_rects,tick):
             is_protected = True
             del bajaj_center[0]
             print(is_protected)
-
 
 def create_car(car_centers):
     car_rects = []
