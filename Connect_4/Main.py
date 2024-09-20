@@ -43,7 +43,7 @@ class Main:
         if self.active_color == self.active_red:
             self.canvas.itemconfig(self.oval_dict[str(zonex)][last], fill=self.set_red)
             self.active_color = self.active_yellow
-            self.win = self.is_connect_4(zonex,last,self.set_red)
+            self.win = self.is_connect_4(self.set_red)
         else:
             self.canvas.itemconfig(self.oval_dict[str(zonex)][last], fill=self.set_yellow)
             self.active_color = self.active_red
