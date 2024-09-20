@@ -135,3 +135,4 @@ if __name__ == "__main__":
     sort = Sort(500, canvas, speed=1)
 
     root.mainloop()
+

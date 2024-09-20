@@ -1,6 +1,8 @@
 import tkinter as tk
 import pyautogui as pag
 import win32api
+
+
 class Main:
     def __init__(self,frame = None,height = 0,width = 0):
         self.canvas  = tk.Canvas(frame,height= height, width= width,bg = "Black")
@@ -85,7 +87,7 @@ class Main:
                 if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
                     return False
                 return self.check_4(zonex, current - 1, color, n + 1,'d')
-
+              
             case 'r':
                 if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
                     return False
@@ -124,8 +126,7 @@ class Main:
                     is_win = is_win or self.check_4(zonex,current,color,n,d)
 
                 return is_win
-
-
+              
     def animate(self):
         if self.win:
             return None
@@ -168,9 +169,10 @@ class Main:
 
         self.cycle()
 
-
     def cycle(self):
         self.canvas.after(60,self.animate)
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
