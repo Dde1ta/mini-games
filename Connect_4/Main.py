@@ -41,81 +41,89 @@ class Main:
         if self.active_color == self.active_red:
             self.canvas.itemconfig(self.oval_dict[str(zonex)][last], fill=self.set_red)
             self.active_color = self.active_yellow
-            self.win = self.is_connect_4(zonex,last,self.set_red)
+            self.win = self.is_connect_4(self.set_red)
         else:
             self.canvas.itemconfig(self.oval_dict[str(zonex)][last], fill=self.set_yellow)
             self.active_color = self.active_red
-            self.win = self.is_connect_4(zonex, last, self.set_yellow)
+            self.win = self.is_connect_4(self.set_yellow)
 
         print(self.win)
 
-    def is_connect_4(self,zonex,current,color):
+    def is_connect_4(self,color):
+        for x in self.oval_dict:
+            for oval in range(len(self.oval_dict[x])):
+                if(self.check_4(int(x),oval,color,0,'all')):
+                    return True
 
-        # left i.e zonex -- 100
 
-        left = zonex
-        n = 1
-        while self.canvas.itemcget(self.oval_dict[str(left)][current],"fill") == color:
-            n += 1
-            left -= 100
-            if(left < 0):
-                break
-            elif n == 4:
-                return True
+    def check_4(self,zonex,current,color,n,direction):
+        if n == 4:
+            return True
 
-        # dialgonal left i.e zonex -= 100 current -= 1
+        if zonex < 0:
+            return False
 
-        left = zonex
-        row = current
-        n = 1
-        while self.canvas.itemcget(self.oval_dict[str(left)][row], "fill") == color:
-            n += 1
-            left -= 100
-            row += 1
-            if (left < 0) or (row >= len(self.oval_dict[str(left)])):
-                break
-            elif n == 4:
-                return True
+        if zonex > 1600:
+            return False
 
-        # down i.e current -= 1
+        if current < 0:
+            return False
 
-        row = current
-        n = 1
-        while self.canvas.itemcget(self.oval_dict[str(zonex)][row], "fill") == color:
-            n += 1
-            row += 1
-            if (row >= len(self.oval_dict[str(left)])):
-                break
-            elif n == 4:
-                return True
+        if current >= len(self.oval_dict['0']):
+            return False
 
-        # diagonal right i.e zonex += 100 and current -= 1
+        if self.canvas.itemcget(self.oval_dict[str(zonex)][current],"fill") != color:
+            return False
 
-        right = zonex
-        row = current
-        n = 1
-        while self.canvas.itemcget(self.oval_dict[str(right)][row], "fill") == color:
-            n += 1
-            right += 100
-            row += 1
-            if (left < 0) or (row >= len(self.oval_dict[str(left)])):
-                break
-            elif n == 4:
-                return True
+        match(direction):
+            case 'l':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex-100,current,color,n+1,'l')
 
-        # right i.e zonex += 100
+            case 'd':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex, current - 1, color, n + 1,'d')
 
-        right = zonex
-        n = 1
-        while self.canvas.itemcget(self.oval_dict[str(right)][current], "fill") == color:
-            n += 1
-            right -= 100
-            if (right < 0):
-                break
-            elif n == 4:
-                return True
+            case 'r':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex + 100, current, color, n + 1,'r')
 
-        return False
+            case 'u':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex, current + 1, color, n + 1,'u')
+
+            case 'lu':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex - 100, current+1, color, n + 1, 'lu')
+
+            case 'ld':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex - 100, current - 1, color, n + 1, 'ld')
+
+            case 'ru':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex + 100, current+1, color, n + 1, 'ru')
+
+            case 'rd':
+                if self.canvas.itemcget(self.oval_dict[str(zonex)][current], "fill") != color:
+                    return False
+                return self.check_4(zonex - 100, current, color, n + 1, 'rd')
+
+            case _:
+                directions = ['l','r','d','u','lu','ld','ru','rd']
+                is_win = False
+
+                for d in directions:
+                    is_win = is_win or self.check_4(zonex,current,color,n,d)
+
+                return is_win
 
 
     def animate(self):
