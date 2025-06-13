@@ -11,7 +11,7 @@ class Main:
         self.oval_dict = {}
 
         self.active_red = "#950000"
-        self.active_yellow = "#DBD400"
+        self.active_yellow = "#C3A302"
         self.set_red = "#FF0000"
         self.set_yellow = "#FFF700"
         self.active_color = self.active_red
@@ -56,6 +56,7 @@ class Main:
             for oval in range(len(self.oval_dict[x])):
                 if(self.check_4(int(x),oval,color,0,'all')):
                     return True
+        return False
 
 
     def check_4(self,zonex,current,color,n,direction):
@@ -133,7 +134,7 @@ class Main:
         x,y = self.get_mouse()
         state_left = win32api.GetKeyState(0x01)
 
-        zonex = ((x-150)//100)*100
+        zonex = ((x)//100)*100
         zoney = ((y)//100)*100
         last = len(self.oval_dict[str(0)]) - 1
 
@@ -176,7 +177,7 @@ class Main:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.geometry("1800x1000+150+0")
+    root.geometry("1800x1000+0+0")
 
     frame = tk.Frame(root,height = 1000, width = 1800)
     frame.pack()
