@@ -295,7 +295,7 @@ coll = False
 
 while running:
 
-    clock.tick(144)
+    clock.tick(104)
 
     if (coll):
         for event in pygame.event.get():
