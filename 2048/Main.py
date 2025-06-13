@@ -1,5 +1,6 @@
 import tkinter as tk
-import random
+from random import randint
+from random import choice
 import keyboard as key
 
 
@@ -27,6 +28,22 @@ class Main:
         self.playing = True
         self.last = None
 
+    def get_matrix(self):
+        return [[block.get_number() if block.get_number() != 1 else 0 for block in row] for row in self.blocks]
+
+    def avg_block_size(self):
+        sum_ = 0
+        n = 0
+        for row in self.blocks:
+            for block in row:
+                if block.get_number() == 1:
+                    pass
+                else:
+                    sum_ += block.get_number()
+                    n += 1
+
+        return sum_//n
+
 
     def get_score(self):
         return self.score
@@ -46,12 +63,21 @@ class Main:
         if self.playing and not self.playing:
             print('Game Over :(')
         else:
-            i, j = [random.randint(0, 3), random.randint(0, 3)]
+            i, j = [randint(0, 3), randint(0, 3)]
 
             while self.blocks[i][j].get_number() != 1:
-                i,j = [random.randint(0, 3), random.randint(0, 3)]
+                i,j = [randint(0, 3), randint(0, 3)]
 
-            self.blocks[i][j].increase()
+            ticks = choice([
+                1,1,1,1,1,1,1,1,
+                2,2,2,2,
+                3
+            ])
+
+            for k in range(ticks):
+                self.blocks[i][j].increase()
+
+            print(self.get_matrix())
 
     def check_over(self):
         print(self.playing)
@@ -85,10 +111,9 @@ class Main:
                     if self.blocks[current_row+1][current_column].get_number() == self.blocks[current_row][current_column].get_number():
                         self.blocks[current_row + 1][current_column].increase()
                         self.blocks[current_row][current_column].set_number(1)
-                        self.age += 2
+                        self.score += self.avg_block_size()
 
         self.spawn()
-        self.increase_score()
 
     def right(self):
 
@@ -113,9 +138,8 @@ class Main:
                     if self.blocks[current_row][current_column+1].get_number() == self.blocks[current_row][current_column].get_number():
                         self.blocks[current_row][current_column+1].increase()
                         self.blocks[current_row][current_column].set_number(1)
-                        self.age += 2
+                        self.score += self.avg_block_size()
         self.spawn()
-        self.increase_score()
 
     def left(self):
 
@@ -140,9 +164,8 @@ class Main:
                         current_column].get_number():
                         self.blocks[current_row][current_column - 1].increase()
                         self.blocks[current_row][current_column].set_number(1)
-                        self.age += 2
+                        self.score += self.avg_block_size()
         self.spawn()
-        self.increase_score()
 
     def up(self):
 
@@ -167,9 +190,8 @@ class Main:
                         current_column].get_number():
                         self.blocks[current_row - 1][current_column].increase()
                         self.blocks[current_row][current_column].set_number(1)
-                        self.age += 2
+                        self.score += self.avg_block_size()
         self.spawn()
-        self.increase_score()
 
     def __display__(self):
         for i in self.blocks:
@@ -190,7 +212,7 @@ class Draw:
 
 
     def set_lables(self):
-        self.label_list = [[tk.Label(label_frame, text="", bg='white',
+        self.label_list = [[tk.Label(self.frame, text="", bg='white',
                                 height=2, width=4, borderwidth=1, relief="solid",
                                 font=("Calibri", 50)) for i in range(4)] for j in range(4)]
         self.score_label = tk.Label(text = f"Score = {self.score}",bg = "white",font=("Calibri", 50))
@@ -265,20 +287,20 @@ def game_consol():
 
     pass
 #
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.geometry("560x755")
-    root.config(bg = "black")
-
-    label_frame = tk.Frame(root, width=700, height=600, bg="white")
-    label_frame.pack_propagate(False)
-    label_frame.place(x=0 , y= 0)
-
-    game = Draw(frame = label_frame)
-
-    root.mainloop()
-    #
-
-    # game_consol()
-
-# game_consol()
+# if __name__ == "__main__":
+#     root = tk.Tk()
+#     root.geometry("560x755")
+#     root.config(bg = "black")
+#
+#     label_frame = tk.Frame(root, width=700, height=600, bg="white")
+#     label_frame.pack_propagate(False)
+#     label_frame.place(x=0 , y= 0)
+#
+#     game = Draw(frame = label_frame)
+#
+#     root.mainloop()
+#     #
+#
+#     # game_consol()
+#
+# # game_consol()

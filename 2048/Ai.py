@@ -1,30 +1,11 @@
-import Main
+from Main import *
+from tkinter import *
 
-class Game:
-    def __init__(self,game = None):
-        self.game = game
+root = Tk()
+game = Draw(root)
 
-    def step(self,action):
-        match action:
-            case 0:
-                '''
-                up
-                '''
-                self.game.up()
-            case 1:
-                '''
-                down
-                '''
-                self.game.down()
-            case 2:
-                '''
-                left
-                '''
-                self.game.left()
-            case 3:
-                '''
-                right
-                '''
-                self.game.right()
+# for i in range(10):
+#     game.main.left()
+#     game.main.right()
 
-        return None
+root.mainloop()
