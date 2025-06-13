@@ -3,7 +3,7 @@ from simulants import *
 
 
 class Sim:
-    def __init__(self, master: tk.Frame, sim_field: Field, cycle: int):
+    def __init__(self, master: tk.Frame, sim_field: Field, cycle: int = 100):
         self.master = master
         self.canvas_main = tk.Canvas(self.master, height=800, width=1500, bg='black')
 
