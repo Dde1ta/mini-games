@@ -8,7 +8,7 @@ API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
 
 def get_youtube():
-    key = "AIzaSyDJglNGOZ_FsWdrOcI0FXrqMLjNIad19p0"
+    key = ""
 
     flow = InstalledAppFlow
 
