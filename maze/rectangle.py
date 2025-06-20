@@ -3,10 +3,11 @@ from math import *
 import tkinter as tk
 from math import *
 import random as ran
+from ds.queues import Heap
 
 class MazeNode:
 
-    def __init__(self, x1:int, y1:int, x2: int, y2: int, recived_from: list[str] ,pointing_to: str,type: str, canvas: tk.Canvas = None):
+    def __init__(self, x1:int, y1:int, x2: int, y2: int, recived_from: list[str] ,pointing_to: str,type: str,pos : list[int] ,canvas: tk.Canvas = None):
         """
 
         :param x1: x1 coordinate
@@ -28,6 +29,7 @@ class MazeNode:
 
         self.pointing = pointing_to
         self.recived = recived_from
+        self.pos = pos
 
         self.__draw_main_box__()
         self.__draw_boaders__()
@@ -45,6 +47,9 @@ class MazeNode:
         elif self.type == "C":
             self.canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,
                                          fill="green", width=0, tags=self.tag)
+        elif self.type == "M":
+            self.canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,
+                                         fill="black", width=0, tags=self.tag)
 
 
         self.canvas.update()
@@ -109,33 +114,50 @@ class MazeNode:
         self.type = type
         self.update_block()
 
+    def set_distance(self, destination):
+        self.distance = abs(destination.pos[0] - self.pos[0]) + abs(destination.pos[1] - self.pos[1])
+
+    def __le__(self, other):
+        assert type(other) == type(MazeNode)
+
+        return self.distance < other.distance
+
+    def __gt__(self, other):
+
+        return (self.distance > other.distance)
+
+
+    def __str__(self):
+        return str(self.distance)
 
 class Maze:
 
-    def __init__(self, m:int, n:int, height:int, width: int, canvas:tk.Canvas):
+    def __init__(self, m:int, n:int, width:int, height: int, canvas:tk.Canvas):
         self.m = m
         self.n = n
 
-        self.block_height, self.block_width = height//n,width//m
+        self.block_height = height//m
+        self.block_width =  width//n
 
         self.flag = False
 
         self.maze =[
             [
                 MazeNode(
-                    x1 = row * self.block_width,
-                    x2 = (row + 1) * self.block_width,
-                    y1 = column * self.block_height,
-                    y2 = (column + 1) * self.block_height,
+                    x1 = column * self.block_width,
+                    x2 = (column + 1) * self.block_width,
+                    y1 = row * self.block_height,
+                    y2 = (row + 1) * self.block_height,
                     recived_from = [],
                     pointing_to = "u",
                     canvas=canvas,
-                    type=""
+                    type="",
+                    pos=[row, column]
 
                 )
 
-            for row in range(n) ]
-        for column in range(m) ]
+            for column in range(n) ]
+        for row in range(m) ]
 
         self.orign = [m - 1, n - 1]
 
@@ -337,30 +359,65 @@ class Maze:
 
         self.genrate(n)
 
-    def solve_closer(self, current: list[int] = None):
-        if self.flag == False:
-            return None
+    def solve_closer(self):
+        heap = Heap()
 
-        if current == None:
-            current = self.orign
-
+        current = self.orign
         x = current[0]
         y = current[1]
         current_node = self.maze[x][y]
 
-        if current_node.type == "T":
-            return False
+        destination = self.maze[self.dx][self.dy]
+
+        current_node.set_distance(destination)
+
+        heap.insert(current_node)
+
+        while current_node.type != "D":
+
+            self.canvas.after(16, self.__wait__())
+
+
+            current_node = heap.pop()
+
+            if current_node.type == "T":
+                continue
+
+            if current_node.type == "D":
+                break
+
+            possible_direction = []
+
+            if current_node.type != "O":
+                current_node.set_type("T")
+                possible_direction = [current_node.pointing]
+
+            possible_direction.extend(current_node.recived)
+
+            for d in possible_direction:
+
+                next = self.get_corrds(d, current_node.pos)
+
+                if(next == None):
+                    continue
+
+                next_node = self.maze[next[0]][next[1]]
+
+                if(next_node.type == "T"):
+                    continue
+
+                next_node.set_distance(destination)
+                heap.insert(next_node)
 
         if current_node.type == "D":
-            return True
-        else:
+            next = self.get_corrds(current_node.pointing, current_node.pos)
 
-            current_node.set_type("T")
+            current_node = self.maze[next[0]][next[1]]
 
-            possible_ = [current_node.pointing].extend(current_node.recived)
-
-
-            return False
+            while current_node.type != "O":
+                current_node.set_type("C")
+                next = self.get_corrds(current_node.pointing, current_node.pos)
+                current_node = self.maze[next[0]][next[1]]
 
     def solve(self, current: list[int] = None):
         if self.flag == False:
@@ -384,7 +441,7 @@ class Maze:
 
             pointing_corrds = self.get_corrds(current_node.pointing, current)
 
-            self.canvas.after(0, self.__wait__())
+            self.canvas.after(16, self.__wait__())
 
             if (self.solve(pointing_corrds)):
                 current_node.set_type("O" if x == self.orign[0] and y == self.orign[1] else "C")
@@ -421,12 +478,15 @@ if __name__ == '__main__':
 
     canvas.pack()
 
-    maze = Maze(100,100,height,widht,canvas) # DONOT EXCCED 100 !!!!!!!!!!!!
+    maze = Maze(20, 20, widht, height, canvas) # DONOT EXCCED 100 !!!!!!!!!!!!
 
-    genrate_botton = tk.Button(root,text = 'genrate', command = lambda : maze.reset(40000))
+    genrate_botton = tk.Button(root,text = 'genrate', command = lambda : maze.reset(5000))
     genrate_botton.pack()
 
-    solve_button = tk.Button(root, text = "solve", command=maze.solve)
+    solve_closer_button = tk.Button(root, text = "solver_closer", command=maze.solve_closer)
+    solve_closer_button.pack()
+
+    solve_button = tk.Button(root, text="solver", command=maze.solve)
     solve_button.pack()
 
     root.mainloop()

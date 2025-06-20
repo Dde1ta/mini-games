@@ -26,7 +26,7 @@ class Queue:
 
 class Heap:
 
-    def __init__(self, size: int = 1000, dummy=math.inf):
+    def __init__(self):
         self.heap = []
         self.last = 0
 
@@ -60,14 +60,12 @@ class Heap:
         top = self.heap[0]
         self.heap[0] = self.heap[-1]
 
-
         del self.heap[-1]
 
-        if len(self.heap) == 0: return top
+        if len(self.heap) == 0:
+            return top
 
-        for i in range(len(self.heap) - 1, -1, -1):
-            self.heapify(i)
-
+        self.heapify(0)
 
         return top
 
@@ -80,9 +78,11 @@ class Heap:
 
 
 if __name__ == "__main__":
-    heap = Heap(20)
-    for i in range(20):
-        heap.insert(random.randint(1,100))
+    heap = Heap()
+    for i in range(200):
+        heap.insert(random.randint(1,10000)/100)
+        if random.randint(1, 10000) > 6000:
+            heap.pop()
         print(heap)
 
 
