@@ -1,17 +1,18 @@
-import google.oauth2.credentials
-import google_auth_oauthlib.flow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google_auth_oauthlib.flow import InstalledAppFlow
+t = int(input())
+out = []
+for i in range(t):
+    ans = 0
+    n = input()
+    s = input().split("#")
 
-API_SERVICE_NAME = 'youtube'
-API_VERSION = 'v3'
+    for a in s:
+        if len(a) >= 3:
+            ans = 2
+            break
+        else:
+            ans += len(a)
 
-def get_youtube():
-    key = ""
+    out.append(ans)
 
-    flow = InstalledAppFlow
-
-    return build(API_SERVICE_NAME, API_VERSION, credentials=key)
-
-print(get_youtube())
+for i in out:
+    print(i)

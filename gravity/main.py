@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+
 class Main:
 
     def __init__(self, master: tk.Tk):
@@ -29,7 +30,6 @@ class Main:
 
         self.state = "setup"
 
-
     def event_handler(self, e: tk.Event):
         print(self.state)
         if e.keysym == 'space':
@@ -46,21 +46,42 @@ class Main:
                 self.load_objects_setup()
                 self.place_objects_setup()
 
+        if e.keysym == "Left":
+            if self.state == "siming":
+                self.sim.shift_objects(25, 0)
+
+        if e.keysym == "Right":
+            if self.state == "siming":
+                self.sim.shift_objects(-25, 0)
+
+        if e.keysym == "Up":
+            if self.state == "siming":
+                self.sim.shift_objects(0, -25)
+
+        if e.keysym == "Down":
+            if self.state == "siming":
+                self.sim.shift_objects(0, 25)
+
+
     def binding(self):
         self.master.bind("<space>", self.event_handler)
         self.master.bind("<Escape>", self.event_handler)
+        self.master.bind("<Left>", self.event_handler)
+        self.master.bind("<Right>", self.event_handler)
+        self.master.bind("<Up>", self.event_handler)
+        self.master.bind("<Down>", self.event_handler)
 
 
     def setup_add_sun(self):
         attribute = self.get_inputs()
 
         new_sun = Sun(
-            mass = attribute['mass'],
-            x = attribute['x'],
-            y = attribute['y'],
+            mass=attribute['mass'],
+            x=attribute['x'],
+            y=attribute['y'],
             vel_x=attribute['vx'],
             vel_y=attribute['vy'],
-            tag = "sun"
+            tag="sun"
         )
 
         self.object_list.append(new_sun)
@@ -76,14 +97,15 @@ class Main:
             vel_x=attribute['vx'],
             vel_y=attribute['vy'],
             color=attribute['color'],
-            tag="p"+str(len(self.object_list))
+            tag="p" + str(len(self.object_list))
         )
 
         self.object_list.append(new_planet)
         self.draw_object_on_preview(new_planet)
 
-    def draw_object_on_preview(self, object :Sun):
+    def draw_object_on_preview(self, object: Sun):
         c = object.get_coords_draw()
+        r = object.radius
 
         self.__preview_canvas.create_line(
             c[0],
@@ -98,19 +120,19 @@ class Main:
 
         if "sun" == object.tag:
             self.__preview_canvas.create_oval(
-                (c[0] - self.SUN_RADIUS),
-                (c[1] - self.SUN_RADIUS),
-                (c[0] + self.SUN_RADIUS),
-                (c[1] + self.SUN_RADIUS),
+                (c[0] - r),
+                (c[1] - r),
+                (c[0] + r),
+                (c[1] + r),
                 fill=object.color,
                 tags='p'
             )
         else:
             self.__preview_canvas.create_oval(
-                (c[0] - self.PLANET_RADIUS),
-                (c[1] - self.PLANET_RADIUS),
-                (c[0] + self.PLANET_RADIUS),
-                (c[1] + self.PLANET_RADIUS),
+                (c[0] - r),
+                (c[1] - r),
+                (c[0] + r),
+                (c[1] + r),
                 fill=object.color,
                 tags='p'
             )
@@ -153,37 +175,40 @@ class Main:
 
         self.setup_frame = tk.Frame(self.master, height=800, width=1500, bg='black')
 
-
         self.__preview_canvas = tk.Canvas(self.setup_frame, height=750, width=1500, bg="black", highlightthickness=0,
                                           relief='ridge')
 
-        self.__options_canvas = tk.Canvas(self.setup_frame,height= 150, width=950 ,bg="black",highlightthickness=0,
+        self.__options_canvas = tk.Canvas(self.setup_frame, height=150, width=950, bg="black", highlightthickness=0,
                                           relief='ridge')
-        self.create_rectangle(0,0,1500,150, alpha=0.35, fill="white")
+        self.create_rectangle(0, 0, 1500, 150, alpha=0.35, fill="white")
 
-        self.__mass_label = tk.Label(self.__options_canvas, text="Mass:", font=self.font, bg='black', fg = "white")
-        self.__x_label = tk.Label(self.__options_canvas, text="X:", font=self.font, bg='black', fg = "white")
-        self.__y_label = tk.Label(self.__options_canvas, text="Y:", font=self.font, bg='black', fg = "white")
-        self.__vx_label = tk.Label(self.__options_canvas, text="Velocity_x:", font=self.font, bg='black', fg = "white")
-        self.__vy_label = tk.Label(self.__options_canvas, text="Velocity_y:", font=self.font, bg='black', fg = "white")
-        self.__color_label = tk.Label(self.__options_canvas, text="Color:", font=self.font, bg='black', fg = "white")
+        self.__mass_label = tk.Label(self.__options_canvas, text="Mass:", font=self.font, bg='black', fg="white")
+        self.__density_label = tk.Label(self.__options_canvas, text="Mass:", font=self.font, bg='black', fg="white")
+        self.__x_label = tk.Label(self.__options_canvas, text="X:", font=self.font, bg='black', fg="white")
+        self.__y_label = tk.Label(self.__options_canvas, text="Y:", font=self.font, bg='black', fg="white")
+        self.__vx_label = tk.Label(self.__options_canvas, text="Velocity_x:", font=self.font, bg='black', fg="white")
+        self.__vy_label = tk.Label(self.__options_canvas, text="Velocity_y:", font=self.font, bg='black', fg="white")
+        self.__color_label = tk.Label(self.__options_canvas, text="Color:", font=self.font, bg='black', fg="white")
 
-        self.__mass_entry = tk.Entry(self.__options_canvas,width=5, font=self.font)
+        self.__mass_entry = tk.Entry(self.__options_canvas, width=5, font=self.font)
         self.__mass_entry.insert(tk.END, "100")
-        self.__x_entry = tk.Entry(self.__options_canvas,width=3, font=self.font)
+        self.__x_entry = tk.Entry(self.__options_canvas, width=3, font=self.font)
         self.__x_entry.insert(tk.END, "0")
-        self.__y_entry = tk.Entry(self.__options_canvas,width=3, font=self.font)
+        self.__y_entry = tk.Entry(self.__options_canvas, width=3, font=self.font)
         self.__y_entry.insert(tk.END, "0")
-        self.__vx_entry = tk.Entry(self.__options_canvas,width=3, font=self.font)
+        self.__vx_entry = tk.Entry(self.__options_canvas, width=3, font=self.font)
         self.__vx_entry.insert(tk.END, "0")
-        self.__vy_entry = tk.Entry(self.__options_canvas,width=3, font=self.font)
+        self.__vy_entry = tk.Entry(self.__options_canvas, width=3, font=self.font)
         self.__vy_entry.insert(tk.END, "0")
-        self.__color_entry = tk.Entry(self.__options_canvas,width=5, font=self.font)
+        self.__color_entry = tk.Entry(self.__options_canvas, width=5, font=self.font)
         self.__color_entry.insert(tk.END, "red")
 
-        self.__add_sun_button = tk.Button(self.__options_canvas, text="Add the sun", font=self.font, command=self.setup_add_sun,bg='black', fg = "white")
-        self.__add_planet_button = tk.Button(self.__options_canvas, text="Add the planet", font=self.font, command=self.setup_add_planet,bg='black', fg = "white")
-        self.__start_button = tk.Button(self.__options_canvas, text="Start", font=self.font, command=self.sim_start,bg='black', fg = "white")
+        self.__add_sun_button = tk.Button(self.__options_canvas, text="Add the sun", font=self.font,
+                                          command=self.setup_add_sun, bg='black', fg="white")
+        self.__add_planet_button = tk.Button(self.__options_canvas, text="Add the planet", font=self.font,
+                                             command=self.setup_add_planet, bg='black', fg="white")
+        self.__start_button = tk.Button(self.__options_canvas, text="Start", font=self.font, command=self.sim_start,
+                                        bg='black', fg="white")
 
     def place_objects_setup(self):
         self.__mass_label.place(x=10, y=10)
@@ -211,7 +236,6 @@ class Main:
 
         self.setup_frame.place(x=0, y=0)
 
-
     def get_inputs(self) -> dict[str, int]:
         mass = int(self.__mass_entry.get())
         x = int(self.__x_entry.get())
@@ -221,21 +245,19 @@ class Main:
         color = self.__color_entry.get()
 
         return {
-            'mass':mass,
-            'x' : x,
-            'y' : y,
-            "vx" : vx,
-            'vy' : vy,
-            'color' : color
+            'mass': mass,
+            'x': x,
+            'y': y,
+            "vx": vx,
+            'vy': vy,
+            'color': color
         }
 
     def destroy_setup(self):
         self.setup_frame.destroy()
 
 
-
 if __name__ == "__main__":
-
     root = tk.Tk()
 
     root.geometry("1500x800")
