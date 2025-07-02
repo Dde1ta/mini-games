@@ -48,20 +48,19 @@ class Main:
 
         if e.keysym == "Left":
             if self.state == "siming":
-                self.sim.shift_objects(25, 0)
+                self.sim.shift_objects(-25, 0)
 
         if e.keysym == "Right":
             if self.state == "siming":
-                self.sim.shift_objects(-25, 0)
+                self.sim.shift_objects(25, 0)
 
         if e.keysym == "Up":
             if self.state == "siming":
-                self.sim.shift_objects(0, -25)
+                self.sim.shift_objects(0, 25)
 
         if e.keysym == "Down":
             if self.state == "siming":
-                self.sim.shift_objects(0, 25)
-
+                self.sim.shift_objects(0, -25)
 
     def binding(self):
         self.master.bind("<space>", self.event_handler)
@@ -70,7 +69,6 @@ class Main:
         self.master.bind("<Right>", self.event_handler)
         self.master.bind("<Up>", self.event_handler)
         self.master.bind("<Down>", self.event_handler)
-
 
     def setup_add_sun(self):
         attribute = self.get_inputs()
@@ -92,6 +90,7 @@ class Main:
 
         new_planet = Planet(
             mass=attribute['mass'],
+            density=attribute['density'],
             x=attribute['x'],
             y=attribute['y'],
             vel_x=attribute['vx'],
@@ -183,7 +182,7 @@ class Main:
         self.create_rectangle(0, 0, 1500, 150, alpha=0.35, fill="white")
 
         self.__mass_label = tk.Label(self.__options_canvas, text="Mass:", font=self.font, bg='black', fg="white")
-        self.__density_label = tk.Label(self.__options_canvas, text="Mass:", font=self.font, bg='black', fg="white")
+        self.__density_label = tk.Label(self.__options_canvas, text="Density:", font=self.font, bg='black', fg="white")
         self.__x_label = tk.Label(self.__options_canvas, text="X:", font=self.font, bg='black', fg="white")
         self.__y_label = tk.Label(self.__options_canvas, text="Y:", font=self.font, bg='black', fg="white")
         self.__vx_label = tk.Label(self.__options_canvas, text="Velocity_x:", font=self.font, bg='black', fg="white")
@@ -192,6 +191,8 @@ class Main:
 
         self.__mass_entry = tk.Entry(self.__options_canvas, width=5, font=self.font)
         self.__mass_entry.insert(tk.END, "100")
+        self.__density_entry = tk.Entry(self.__options_canvas, width=5, font=self.font)
+        self.__density_entry.insert(tk.END, "100")
         self.__x_entry = tk.Entry(self.__options_canvas, width=3, font=self.font)
         self.__x_entry.insert(tk.END, "0")
         self.__y_entry = tk.Entry(self.__options_canvas, width=3, font=self.font)
@@ -213,6 +214,8 @@ class Main:
     def place_objects_setup(self):
         self.__mass_label.place(x=10, y=10)
         self.__mass_entry.place(x=75, y=10)
+        self.__density_label.place(x=10, y=100)
+        self.__density_entry.place(x=100, y=100)
 
         self.__x_label.place(x=170, y=10)
         self.__x_entry.place(x=200, y=10)
@@ -238,6 +241,7 @@ class Main:
 
     def get_inputs(self) -> dict[str, int]:
         mass = int(self.__mass_entry.get())
+        density = int(self.__density_entry.get())
         x = int(self.__x_entry.get())
         y = int(self.__y_entry.get())
         vx = int(self.__vx_entry.get())
@@ -246,6 +250,7 @@ class Main:
 
         return {
             'mass': mass,
+            'density': density,
             'x': x,
             'y': y,
             "vx": vx,

@@ -123,7 +123,7 @@ class Sim:
     def paused(self):
         self.master.after(16, self.update)
 
-    def re_draw_lines(self):
+    def re_draw(self):
         dummy = {
                     'x1': None,
                     'y1': None,
@@ -144,17 +144,46 @@ class Sim:
                         fill=line["color"] , tags=str("line_") + str(tick)
                     )
 
+        obj = self.sim_field.get_field()
+
+        for i in obj:
+            c = i.get_coords_draw()
+            c = [
+                c[0] + self.offset[0],
+                c[1] + self.offset[1]
+            ]
+
+            r = i.radius
+
+            if "sun" == i.tag:
+                self.canvas_main.create_oval(
+                    c[0] - r,
+                    c[1] - r,
+                    c[0] + r,
+                    c[1] + r,
+                    fill=i.color,
+                    tags='p'
+                )
+            else:
+                self.canvas_main.create_oval(
+                    c[0] - r,
+                    c[1] - r,
+                    c[0] + r,
+                    c[1] + r,
+                    fill=i.color,
+                    tags='p'
+                )
 
     def shift_objects(self, x_off: int, y_off :int):
         self.offset[0] += x_off
         self.offset[1] += y_off
 
         self.remove()
+
         for i in range(self.cycle):
             self.canvas_main.delete(str("line_") + str(i))
 
-        self.re_draw_lines()
-        self.master.after(16, self.draw)
+        self.master.after(16, self.re_draw)
 
 
     def update(self):

@@ -115,8 +115,7 @@ class Sun(Things):
 
 
 class Planet(Things):
-    def __init__(self, mass: int, x: int, y: int, vel_x: int, vel_y: int, tag: str = "", color: str = "cyan",
-                 density: int = 1000):
+    def __init__(self, mass: int, x: int, y: int, density: int, vel_x: int, vel_y: int, tag: str = "", color: str = "cyan"):
         super().__init__(mass, x, y, vel_x, vel_y, tag, color, density=density)
         self.cal = Calculator()
 
