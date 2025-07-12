@@ -90,12 +90,12 @@ class Sim:
             c_prev = self.prev[obj[i].get_tag()]
 
             self.lines[current_tick][i] = {
-                    'x1': c_new[0],
-                    'y1': c_new[1],
-                    'x2': c_prev[0],
-                    'y2': c_prev[1],
-                    'color': obj[i].color
-                }
+                'x1': c_new[0],
+                'y1': c_new[1],
+                'x2': c_prev[0],
+                'y2': c_prev[1],
+                'color': obj[i].color
+            }
 
             c_new = [
                 c_new[0] + self.offset[0],
@@ -125,12 +125,12 @@ class Sim:
 
     def re_draw(self):
         dummy = {
-                    'x1': None,
-                    'y1': None,
-                    'x2': None,
-                    'y2': None,
-                    'color': None
-                }
+            'x1': None,
+            'y1': None,
+            'x2': None,
+            'y2': None,
+            'color': None
+        }
 
         for tick in range(self.cycle):
             for line in self.lines[tick]:
@@ -141,7 +141,7 @@ class Sim:
                     self.canvas_main.create_line(
                         line["x1"] + self.offset[0], line["y1"] + self.offset[1],
                         line["x2"] + self.offset[0], line["y2"] + self.offset[1],
-                        fill=line["color"] , tags=str("line_") + str(tick)
+                        fill=line["color"], tags=str("line_") + str(tick)
                     )
 
         obj = self.sim_field.get_field()
@@ -174,7 +174,7 @@ class Sim:
                     tags='p'
                 )
 
-    def shift_objects(self, x_off: int, y_off :int):
+    def shift_objects(self, x_off: int, y_off: int):
         self.offset[0] += x_off
         self.offset[1] += y_off
 
@@ -184,7 +184,6 @@ class Sim:
             self.canvas_main.delete(str("line_") + str(i))
 
         self.master.after(16, self.re_draw)
-
 
     def update(self):
         if self.state:
