@@ -478,7 +478,7 @@ if __name__ == '__main__':
 
     canvas.pack()
 
-    maze = Maze(20, 20, widht, height, canvas) # DONOT EXCCED 100 !!!!!!!!!!!!
+    maze = Maze(50, 50, widht, height, canvas) # DONOT EXCCED 100 !!!!!!!!!!!!
 
     genrate_botton = tk.Button(root,text = 'genrate', command = lambda : maze.reset(5000))
     genrate_botton.pack()

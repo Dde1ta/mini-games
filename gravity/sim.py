@@ -13,9 +13,11 @@ class Sim:
         self.SUN_RADIUS = 25
         self.SUN_COLOR = 'yellow'
 
-        self.offset = [0, 0]  # the shift in orign when arrow keys are pressed
+        self.offset = [750, 400]  # the shift in orign when arrow keys are pressed
 
         self.cycle = cycle
+
+        self.scale = 1
 
         self.lines = [
             [
@@ -53,13 +55,10 @@ class Sim:
         obj = self.sim_field.get_field()
 
         for i in obj:
-            c = i.get_coords_draw()
-            c = [
-                c[0] + self.offset[0],
-                c[1] + self.offset[1]
-            ]
+            c = i.get_coords()
+            c = self.__get_draw_coords(c[0], c[1])
 
-            r = i.radius
+            r = i.radius / (1 + self.scale * .1)
 
             if "sun" == i.tag:
                 self.canvas_main.create_oval(
@@ -86,7 +85,7 @@ class Sim:
         current_tick = self.get_tick()
         obj = self.sim_field.get_field()
         for i in range(len(obj)):
-            c_new = obj[i].get_coords_draw()
+            c_new = obj[i].get_coords()
             c_prev = self.prev[obj[i].get_tag()]
 
             self.lines[current_tick][i] = {
@@ -97,15 +96,8 @@ class Sim:
                 'color': obj[i].color
             }
 
-            c_new = [
-                c_new[0] + self.offset[0],
-                c_new[1] + self.offset[1]
-            ]
-
-            c_prev = [
-                c_prev[0] + self.offset[0],
-                c_prev[1] + self.offset[1]
-            ]
+            c_new = self.__get_draw_coords(c_new[0], c_new[1])
+            c_prev = self.__get_draw_coords(c_prev[0], c_prev[1])
 
             self.canvas_main.create_line(
                 c_prev[0], c_prev[1],
@@ -138,22 +130,20 @@ class Sim:
                     continue
 
                 else:
+                    c1 = self.__get_draw_coords(line["x1"], line["y1"])
+                    c2 = self.__get_draw_coords(line["x2"], line["y2"])
                     self.canvas_main.create_line(
-                        line["x1"] + self.offset[0], line["y1"] + self.offset[1],
-                        line["x2"] + self.offset[0], line["y2"] + self.offset[1],
+                        c1[0], c1[1],
+                        c2[0], c2[1],
                         fill=line["color"], tags=str("line_") + str(tick)
                     )
 
         obj = self.sim_field.get_field()
 
         for i in obj:
-            c = i.get_coords_draw()
-            c = [
-                c[0] + self.offset[0],
-                c[1] + self.offset[1]
-            ]
-
-            r = i.radius
+            c = i.get_coords()
+            c = self.__get_draw_coords(c[0], c[1])
+            r = i.radius / (1 + self.scale * .1)
 
             if "sun" == i.tag:
                 self.canvas_main.create_oval(
@@ -191,7 +181,7 @@ class Sim:
             self.tick += 1
 
             for obj in self.sim_field.get_field():
-                self.prev[obj.get_tag()] = obj.get_coords_draw()
+                self.prev[obj.get_tag()] = obj.get_coords()
 
             self.sim_field.update()
 
@@ -202,3 +192,20 @@ class Sim:
             self.master.after(16, self.draw)
         else:
             self.master.after(16, self.paused)
+
+    def set_scale(self, delta: int = 0):
+        if delta <= 0:
+            while self.scale + delta <= 0:
+                delta *= .1
+
+        self.scale += delta
+        for i in range(self.cycle):
+            self.canvas_main.delete(str("line_") + str(i))
+        self.remove()
+        self.re_draw()
+
+    def __get_draw_coords(self, x: int, y: int) -> [int,int]:
+        return [
+            (x // self.scale) + self.offset[0],
+            self.offset[1] - (y // self.scale)
+        ]

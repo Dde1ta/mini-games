@@ -31,7 +31,7 @@ class Main:
         self.state = "setup"
 
     def event_handler(self, e: tk.Event):
-        print(self.state)
+        print(e.keysym)
         if e.keysym == 'space':
             if self.state == "siming":
                 self.sim.state_change(e)
@@ -48,19 +48,23 @@ class Main:
 
         if e.keysym == "Left":
             if self.state == "siming":
-                self.sim.shift_objects(-25, 0)
+                self.sim.shift_objects(50, 0)
 
         if e.keysym == "Right":
             if self.state == "siming":
-                self.sim.shift_objects(25, 0)
+                self.sim.shift_objects(-50, 0)
 
         if e.keysym == "Up":
             if self.state == "siming":
-                self.sim.shift_objects(0, 25)
+                self.sim.shift_objects(0, 50)
 
         if e.keysym == "Down":
             if self.state == "siming":
-                self.sim.shift_objects(0, -25)
+                self.sim.shift_objects(0, -50)
+
+        if e.keysym == "??":
+            if self.state == "siming":
+                self.sim.set_scale(delta=e.delta // 120)
 
     def binding(self):
         self.master.bind("<space>", self.event_handler)
@@ -69,6 +73,7 @@ class Main:
         self.master.bind("<Right>", self.event_handler)
         self.master.bind("<Up>", self.event_handler)
         self.master.bind("<Down>", self.event_handler)
+        self.master.bind("<MouseWheel>", self.event_handler)
 
     def setup_add_sun(self):
         attribute = self.get_inputs()
