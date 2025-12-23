@@ -4,7 +4,6 @@ from random import choice
 import keyboard as key
 
 
-
 class Block:
 
     def __init__(self, number: int):
@@ -21,12 +20,15 @@ class Block:
 
 
 class Main:
-    def __init__(self):
-        self.blocks = [[Block(1) for i in range(4)] for i in range(4)]
+    def __init__(self, x, y):
+
         self.score = 0
         self.age = 0
-        self.playing = True
+        self.running = True
         self.last = None
+        self.xn = x
+        self.yn = y
+        self.blocks = [[Block(1) for i in range(self.xn)] for i in range(self.yn)]
 
     def get_matrix(self):
         return [[block.get_number() if block.get_number() != 1 else 0 for block in row] for row in self.blocks]
@@ -44,7 +46,6 @@ class Main:
 
         return sum_//n
 
-
     def get_score(self):
         return self.score
 
@@ -56,11 +57,12 @@ class Main:
                     pass
                 else:
                     self.score += block.get_number()
-        self.score += self.age*2
+        self.score += (self.age//20)*2
 
     def spawn(self):
-        #self.check_over()
-        if self.playing and not self.playing:
+        self.check_over()
+        self.age += 1
+        if not self.running:
             print('Game Over :(')
         else:
             i, j = [randint(0, 3), randint(0, 3)]
@@ -80,17 +82,64 @@ class Main:
             print(self.get_matrix())
 
     def check_over(self):
-        print(self.playing)
-        for i in self.blocks:
-            for j in i:
-                if j.get_number() == 1:
-                    break
-        else:
-            self.playing = False
+        flag = False
+        for row in range(self.xn):
+            for col in range(self.yn):
+                if self.blocks[row][col].get_number() == 1:
 
-        print(self.playing)
+                    flag = True
+                    return False
+                    break
+                if row == 0:
+                    if col == 0:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col + 1].get_number())
+
+                    elif col == self.yn - 1:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col - 1].get_number())
+
+                    else:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col - 1].get_number())
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col + 1].get_number())
+
+                    flag |= (self.blocks[row][col].get_number() == self.blocks[row + 1][col].get_number())
+
+                elif row == self.xn - 1:
+                    if col == 0:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col + 1].get_number())
+
+                    elif col == self.yn - 1:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col - 1].get_number())
+
+                    else:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col - 1].get_number())
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col + 1].get_number())
+
+                    flag |= (self.blocks[row][col].get_number() == self.blocks[row - 1][col].get_number())
+
+                else:
+                    if col == 0:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col + 1].get_number())
+
+                    elif col == self.yn - 1:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col - 1].get_number())
+
+                    else:
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col - 1].get_number())
+                        flag |= (self.blocks[row][col].get_number() == self.blocks[row][col + 1].get_number())
+
+                    flag |= (self.blocks[row][col].get_number() == self.blocks[row + 1][col].get_number())
+                    flag |= (self.blocks[row][col].get_number() == self.blocks[row - 1][col].get_number())
+
+        self.playing = flag
+        if not flag:
+            print("game Over")
+
+        return not flag
 
     def down(self):
+        if self.check_over():
+            print("No Possible")
+            return None
 
         self.last = 'd'
         for row in range(len(self.blocks)-2,-1,-1):
@@ -113,10 +162,15 @@ class Main:
                         self.blocks[current_row][current_column].set_number(1)
                         self.score += self.avg_block_size()
 
+        if(self.check_over()):
+            self.running = False
+
         self.spawn()
 
     def right(self):
-
+        if self.check_over():
+            print("No Possible")
+            return None
         self.last = 'r'
         for row in range(len(self.blocks)):
             for column in range(len(self.blocks[0])-2,-1,-1):
@@ -139,10 +193,16 @@ class Main:
                         self.blocks[current_row][current_column+1].increase()
                         self.blocks[current_row][current_column].set_number(1)
                         self.score += self.avg_block_size()
+
+        if (self.check_over()):
+            self.running = False
+
         self.spawn()
 
     def left(self):
-
+        if self.check_over():
+            print("No Possible")
+            return None
         self.last = 'l'
         for row in range(len(self.blocks)):
             for column in range(1,len(self.blocks[0])):
@@ -165,10 +225,16 @@ class Main:
                         self.blocks[current_row][current_column - 1].increase()
                         self.blocks[current_row][current_column].set_number(1)
                         self.score += self.avg_block_size()
+
+        if (self.check_over()):
+            self.running = False
+
         self.spawn()
 
     def up(self):
-
+        if self.check_over():
+            print("No Possible")
+            return None
         self.last = 'u'
         for row in range(1,len(self.blocks)):
             for column in range(len(self.blocks[0])):
@@ -191,6 +257,10 @@ class Main:
                         self.blocks[current_row - 1][current_column].increase()
                         self.blocks[current_row][current_column].set_number(1)
                         self.score += self.avg_block_size()
+
+        if (self.check_over()):
+            self.running = False
+
         self.spawn()
 
     def __display__(self):
@@ -202,19 +272,22 @@ class Main:
 
 
 class Draw:
-    def __init__(self,frame = None):
-        self.main = Main()
+    def __init__(self,frame = None, x = 4, y = 4):
+        self.main = Main(x, y)
         self.frame = frame
+        self.x = x
+        self.y = y
         self.score = self.main.get_score()
         self.set_lables()
         self.main.spawn()
         self.animate()
 
 
+
     def set_lables(self):
         self.label_list = [[tk.Label(self.frame, text="", bg='white',
                                 height=2, width=4, borderwidth=1, relief="solid",
-                                font=("Calibri", 50)) for i in range(4)] for j in range(4)]
+                                font=("Calibri", 50)) for i in range(self.x)] for j in range(self.y)]
         self.score_label = tk.Label(text = f"Score = {self.score}",bg = "white",font=("Calibri", 50))
         self.first_draw()
 
@@ -223,7 +296,7 @@ class Draw:
         for row in range(1,len(self.label_list)+1):
             for column in range(1,len(self.label_list[row-1])+1):
                 self.label_list[row-1][column-1].grid(row=row, column=column)
-        self.score_label.place(x = 0,y = 675)
+        self.score_label.place(x = 1000,y = 0)
         self.add_hotkeys()
 
     def add_hotkeys(self):

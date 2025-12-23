@@ -441,7 +441,7 @@ class Maze:
 
             pointing_corrds = self.get_corrds(current_node.pointing, current)
 
-            self.canvas.after(16, self.__wait__())
+            self.canvas.after(1, self.__wait__())
 
             if (self.solve(pointing_corrds)):
                 current_node.set_type("O" if x == self.orign[0] and y == self.orign[1] else "C")
@@ -478,7 +478,7 @@ if __name__ == '__main__':
 
     canvas.pack()
 
-    maze = Maze(50, 50, widht, height, canvas) # DONOT EXCCED 100 !!!!!!!!!!!!
+    maze = Maze(20, 20, widht, height, canvas) # DONOT EXCCED 100 !!!!!!!!!!!!
 
     genrate_botton = tk.Button(root,text = 'genrate', command = lambda : maze.reset(5000))
     genrate_botton.pack()

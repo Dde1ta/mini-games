@@ -16,13 +16,13 @@ class Sort:
     def __init__(self, length, canvas=None, speed=20):
         self.arr = self.create_array(length)
         self.length = length
-        self.speed = 100
-        self.width = int(1500/length)
+        self.speed = speed
+        self.width = 1500/length
         print(self.width)
         self.canvas = canvas
         self.draw_arr()
 
-        self.insertion_sort()
+        self.quick_sort(0, length -1)
 
     def wait(self):
         pass
@@ -129,10 +129,10 @@ if __name__ == "__main__":
 
     root.geometry("1500x800+0+0")
 
-    canvas = tk.Canvas(root, bg="black", height=800, width= 1500)
+    canvas = tk.Canvas(root, bg="black", height=800, width=1500)
     canvas.pack()
 
-    sort = Sort(150, canvas, speed=1)
+    sort = Sort(900, canvas, speed=1)
 
     root.mainloop()
 
